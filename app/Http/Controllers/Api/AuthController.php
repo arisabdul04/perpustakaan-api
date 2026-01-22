@@ -24,6 +24,7 @@ class AuthController extends Controller
             ]);
 
             return response()->json([
+                'message' => 'Registered successfully',
                 'token' => $user->createToken('api')->plainTextToken
             ]);
         } catch (\Exception $e) {
@@ -46,6 +47,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
+            'message' => 'Logged in successfully',
             'token' => $request->user()->createToken('api')->plainTextToken
         ]);
     }

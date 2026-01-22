@@ -42,7 +42,10 @@ class BookController extends Controller
 
             $book = Book::create($validated);
 
-            return response()->json($book, 201);
+            return response()->json([
+                'message' => "Successfully created book",
+                'data' => $book
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
@@ -76,7 +79,10 @@ class BookController extends Controller
             $book = Book::findOrFail($id);
             $book->update($validated);
 
-            return response()->json($book);
+            return response()->json([
+                'message' => "Successfully updated book",
+                'data' => $book
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
@@ -101,7 +107,7 @@ class BookController extends Controller
 
             $book->delete();
 
-            return response()->json(['message' => 'Success Delete'], 200);
+            return response()->json(['message' => 'Successfully deleted']);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Book not found'], 404);
         } catch (\Exception $e) {
