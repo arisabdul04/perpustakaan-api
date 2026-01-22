@@ -90,10 +90,15 @@ class BookController extends Controller
     public function destroy(string $id)
     {
         try {
-            $book = Book::find($id);
+            $book = Book::with('loan')->find($id);
             if (!$book) {
                 return response()->json(['message' => 'Book not found'], 404);
             }
+            
+            if ($book->loan()->exists()) {
+                return response()->json(['message' => 'Cannot delete book with active loans'], 422);
+            }
+
             $book->delete();
 
             return response()->json(['message' => 'Success Delete'], 200);
