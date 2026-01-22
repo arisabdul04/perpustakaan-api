@@ -75,15 +75,22 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $category = Category::findOrFail($id);
-            $category->delete();
+        $category = Category::with('books')->find($id);
 
-            return response()->json(['message' => 'Category deleted successfully']);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'Category not found'], 404);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete category'], 500);
+        if (! $category) {
+            return response()->json([
+                'message' => 'Category not found'
+            ], 404);
         }
+
+        if ($category->books()->exists()) {
+            return response()->json([
+                'message' => 'Cannot delete category with associated books'
+            ], 422);
+        }
+
+        $category->delete();
+
+        return response()->json(['message' => 'Successfully deleted']);
     }
 }
