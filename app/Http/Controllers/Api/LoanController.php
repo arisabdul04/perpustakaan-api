@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class LoanController extends Controller
 {
-    // pinjam buku
+    // borrow book
     public function borrow(Request $request) {
         $request->validate(['book_id' => 'required|exists:books,id']);
 
@@ -20,7 +20,7 @@ class LoanController extends Controller
                 $book = Book::lockForUpdate()->findOrFail($request->book_id);
 
                 if ($book->stock < 1) {
-                    return response()->json(['message' => 'Stock habis'], 400);
+                    return response()->json(['message' => 'Out of stock'], 400);
                 }
 
                 $book->decrement('stock');
@@ -39,7 +39,7 @@ class LoanController extends Controller
         }
     }
 
-    // kembalikan buku
+    // return book
     public function returnBook($id) {
         try {
             $loan = Loan::with('book')->findOrFail($id);
@@ -54,14 +54,14 @@ class LoanController extends Controller
                     $loan->book->increment('stock');
                 }
 
-                return response()->json(['message' => 'Buku dikembalikan']);
+                return response()->json(['message' => 'Book returned']);
             });
         } catch (\Throwable $e) {
             return response()->json(['message' => 'Failed to return book'], 500);
         }
     }
 
-    // daftar buku yang dipinjam user
+    // list of books borrowed by user
     public function myLoans(Request $request) {
         try {
             $status = $request->status;

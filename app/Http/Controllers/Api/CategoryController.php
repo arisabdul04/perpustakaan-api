@@ -32,7 +32,7 @@ class CategoryController extends Controller
 
             $category = Category::create($validated);
 
-            return response()->json($category, 201);
+            return response()->json(['message' => 'Category created successfully', 'data' => $category], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
@@ -62,7 +62,7 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
             $category->update($validated);
 
-            return response()->json($category);
+            return response()->json(['message' => 'Category updated successfully', 'data' => $category]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
@@ -79,7 +79,7 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
             $category->delete();
 
-            return response()->json(['message' => 'Success Delete'], 204);
+            return response()->json(['message' => 'Category deleted successfully']);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Category not found'], 404);
         } catch (\Exception $e) {
